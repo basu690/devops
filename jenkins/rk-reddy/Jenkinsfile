@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Environment Check') {
+            steps {
+                sh '''
+                    echo "Jenkins pipeline is running"
+                    whoami
+                    hostname
+                    java -version
+                    git --version
+                '''
+            }
+        }
+
+        stage('Workspace Check') {
+            steps {
+                sh '''
+                    pwd
+                    ls -la
+                '''
+            }
+        }
+
+        stage('Verification') {
+            steps {
+                echo 'Jenkins installation and pipeline verification completed successfully'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'BUILD SUCCESS'
+        }
+
+        failure {
+            echo 'BUILD FAILED'
+        }
+    }
+}

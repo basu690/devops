@@ -1,31 +1,29 @@
-# Stage 1
-FROM node:21 AS backend-builder
+FROM node:20-alpine AS dependencies
 
-# setup the working dir
 WORKDIR /app
 
-# code
-COPY . .
+COPY package.json package-lock.json ./
 
-# packages install
-RUN npm i
+RUN npm ci
 
-# tests
-RUN npm run test
+FROM node:20-alpine AS production
 
-# Stage 2
-FROM node:21-slim
-
-# setup the working dir
 WORKDIR /app
 
-# copy the above stage as compressed
-COPY --from=backend-builder /app .
+ENV NODE_ENV=production
+ENV PORT=5000
 
-COPY .env.docker .env
+COPY package.json package-lock.json ./
+COPY --from=dependencies /app/node_modules ./node_modules
 
-# Port
-EXPOSE 8080
+RUN npm prune --omit=dev && npm cache clean --force
 
-# App
-CMD ["npm", "start"]
+COPY --chown=node:node . .
+
+RUN chown -R node:node /app
+
+USER node
+
+EXPOSE 5000
+
+CMD ["node", "server.js"]

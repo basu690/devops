@@ -1,0 +1,57 @@
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build and test output
+dist/
+coverage/
+
+# Local database backups
+backups/
+*.archive
+*.archive.gz
+backup.log
+
+# Build and validation logs
+*.log
+*-validation.txt
+deployment-validation.txt
+
+# RK local safety copies
+*.before-rk
+
+# OS/editor files
+.DS_Store
+*.swp# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build and test output
+dist/
+coverage/
+
+# Local database backups
+backups/
+*.archive
+*.archive.gz
+backup.log
+
+# Build and validation logs
+*.log
+*-validation.txt
+deployment-validation.txt
+
+# RK local safety copies
+*.before-rk
+
+# OS/editor files
+.DS_Store
+*.swp

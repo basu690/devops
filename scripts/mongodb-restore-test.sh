@@ -17,18 +17,18 @@ fi
 
 echo "Removing only the previous restore-test database..."
 
-docker exec thinkz_mongodb \
+timeout 15 docker exec thinkz_mongodb \
   mongosh --quiet \
-  --eval "db.getSiblingDB('${TEST_DATABASE}').dropDatabase()"
+  --eval "printjson(db.getSiblingDB('${TEST_DATABASE}').dropDatabase())"
 
 echo "Restoring backup into ${TEST_DATABASE}..."
 
-docker exec -i thinkz_mongodb \
+timeout 60 docker exec -i thinkz_mongodb \
   mongorestore \
   --archive \
   --gzip \
   --nsFrom='thinkz_ai.*' \
-  --nsTo='thinkz_ai_restore_test.*' \
+  --nsTo="${TEST_DATABASE}.*" \
   < "$BACKUP_FILE"
 
 echo "MongoDB restore test completed successfully."

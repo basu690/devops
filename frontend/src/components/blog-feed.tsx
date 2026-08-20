@@ -24,10 +24,13 @@ export default function BlogFeed() {
       .get(import.meta.env.VITE_API_PATH + categoryEndpoint)
       .then((response) => {
         setPosts(response.data);
-        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
+        setPosts([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [selectedCategory]);
 
@@ -55,13 +58,19 @@ export default function BlogFeed() {
               : `Posts related to "${selectedCategory}"`}
           </h1>
           <div className="flex flex-col gap-6">
-            {posts.length === 0 || loading == true
-              ? Array(5)
-                  .fill(0)
-                  .map((_, index) => <FeaturedPostCardSkeleton key={index} />)
-              : posts
-                  .slice(0, 5)
-                  .map((post, index) => <FeaturedPostCard key={index} post={post} />)}
+            {loading ? (
+              Array(5)
+                .fill(0)
+                .map((_, index) => <FeaturedPostCardSkeleton key={index} />)
+            ) : posts.length === 0 ? (
+              <p className="text-slate-500 dark:text-dark-tertiary">
+                No featured posts available.
+              </p>
+            ) : (
+              posts
+                .slice(0, 5)
+                .map((post, index) => <FeaturedPostCard key={index} post={post} />)
+            )}
           </div>
         </div>
         <div className="w-full p-4 md:w-1/3">

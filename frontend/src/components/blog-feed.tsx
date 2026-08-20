@@ -12,6 +12,7 @@ export default function BlogFeed() {
   const [posts, setPosts] = useState([]);
   const [latestPosts, setLatestPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [latestLoading, setLatestLoading] = useState(true);
 
   useEffect(() => {
     let categoryEndpoint =
@@ -42,6 +43,10 @@ export default function BlogFeed() {
       })
       .catch((error) => {
         console.error(error);
+        setLatestPosts([]);
+      })
+      .finally(() => {
+        setLatestLoading(false);
       });
   }, []);
 
@@ -104,13 +109,19 @@ export default function BlogFeed() {
               Latest Posts
             </h2>
             <div className="flex flex-col gap-4">
-              {latestPosts.length === 0
-                ? Array(5)
-                    .fill(0)
-                    .map((_, index) => <LatestPostCardSkeleton key={index} />)
-                : latestPosts
-                    .slice(0, 5)
-                    .map((post, index) => <LatestPostCard key={index} post={post} />)}
+              {latestLoading ? (
+                Array(5)
+                  .fill(0)
+                  .map((_, index) => <LatestPostCardSkeleton key={index} />)
+              ) : latestPosts.length === 0 ? (
+                <p className="text-slate-500 dark:text-dark-tertiary">
+                  No latest posts available.
+                </p>
+              ) : (
+                latestPosts
+                  .slice(0, 5)
+                  .map((post, index) => <LatestPostCard key={index} post={post} />)
+              )}
             </div>
           </div>
         </div>

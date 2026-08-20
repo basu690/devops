@@ -7,6 +7,7 @@ import { PostCardSkeleton } from '@/components/skeletons/post-card-skeleton';
 import Header from '@/layouts/header-layout';
 function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -16,6 +17,10 @@ function HomePage() {
       })
       .catch((error) => {
         console.error(error);
+        setPosts([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -28,11 +33,17 @@ function HomePage() {
           Welcome to my Travel Blog
         </h1>
         <div className="flex flex-wrap">
-          {posts.length === 0
-            ? Array(8)
-                .fill(0)
-                .map((_, index) => <PostCardSkeleton key={index} />)
-            : posts.map((post) => <PostCard key={post._id} post={post} />)}
+          {loading ? (
+            Array(8)
+              .fill(0)
+              .map((_, index) => <PostCardSkeleton key={index} />)
+          ) : posts.length === 0 ? (
+            <p className="py-6 text-slate-500 dark:text-dark-tertiary">
+              No posts available.
+            </p>
+          ) : (
+            posts.map((post) => <PostCard key={post._id} post={post} />)
+          )}
         </div>
       </div>
     </div>
